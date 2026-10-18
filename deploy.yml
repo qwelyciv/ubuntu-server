@@ -1,0 +1,36 @@
+---
+- name: Deploy Nextcloud & Monitoring Stack
+  hosts: localhost
+  connection: local
+  become: yes
+  vars:
+    project_dir: "{{ playbook_dir }}"
+
+  tasks:
+    - name: Ensure prometheus directory exists
+      file:
+        path: "{{ project_dir }}/prometheus"
+        state: directory
+        mode: '0755'
+
+    - name: Deploy Prometheus configuration
+      copy:
+        dest: "{{ project_dir }}/prometheus/prometheus.yml"
+        mode: '0644'
+        content: |
+          global:
+            scrape_interval: 5s
+          scrape_configs:
+            - job_name: 'node_exporter'
+              static_configs:
+                - targets: ['node-exporter:9100']
+            - job_name: 'cadvisor'
+              static_configs:
+                - targets: ['cadvisor:8080']
+
+    - name: Execute Docker Compose deployment
+      command: docker compose up -d
+      args:
+        chdir: "{{ project_dir }}"
+      register: compose_output
+      changed_when: "'Started' in compose_output.stdout or 'Created' in compose_output.stdout"
