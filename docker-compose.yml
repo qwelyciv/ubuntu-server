@@ -16,8 +16,6 @@ services:
   app:
     image: nextcloud:apache
     restart: always
-    ports:
-      - "8080:80"
     depends_on:
       - db
       - redis
@@ -54,8 +52,6 @@ services:
   prometheus:
     image: prom/prometheus:latest
     restart: always
-    ports:
-      - "9090:9090"
     volumes:
       - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
       - prometheus_data:/prometheus
@@ -63,10 +59,20 @@ services:
   grafana:
     image: grafana/grafana:latest
     restart: always
-    ports:
-      - "3000:3000"
     volumes:
       - grafana_data:/var/lib/grafana
+
+  nginx:
+    image: nginx:alpine
+    restart: always
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+    depends_on:
+      - app
+      - grafana
+      - prometheus
 
 volumes:
   db_data:
