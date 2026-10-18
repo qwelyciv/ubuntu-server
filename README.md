@@ -1,8 +1,9 @@
 # Private Cloud & Telemetry Infrastructure
 
-Automated deployment of a private cloud storage solution with a comprehensive observability stack using Docker Compose and Ansible.
+Automated deployment of a private cloud storage solution with a comprehensive observability stack, utilizing Nginx as a reverse proxy.
 
 ## Architecture
+- **Reverse Proxy:** Nginx (Port 80)
 - **App Tier:** Nextcloud
 - **Database & Cache:** PostgreSQL, Redis
 - **Telemetry & Monitoring:** Prometheus, Grafana, Node Exporter, cAdvisor
@@ -15,10 +16,11 @@ Automated deployment of a private cloud storage solution with a comprehensive ob
 
 ## Quick Start
 1. Clone this repository.
-2. Configure the environment variables by copying the example file:
+2. Configure the environment variables by copying the template:
 *(Edit `.env` to set your secure `DB_PASSWORD`)*
 3. Run the Ansible playbook to provision the infrastructure:
+4. **Local DNS Setup:** Map the application domains to your server's IP address (or `127.0.0.1` if using local port forwarding) in your client machine's `hosts` file (`/etc/hosts` or `C:\Windows\System32\drivers\etc\hosts`):
 ## Access Points
-- **Nextcloud:** `http://<server-ip>:8080`
-- **Grafana:** `http://<server-ip>:3000`
-- **Prometheus:** `http://<server-ip>:9090`
+- **Nextcloud:** `http://cloud.local`
+- **Grafana:** `http://grafana.local`
+- **Prometheus:** `http://prometheus.local`
